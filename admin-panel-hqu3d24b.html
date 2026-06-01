@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="KafeQR Yönetim Paneli — Garson çağrılarını ve hesap taleplerini canlı takip edin." />
+  <meta name="theme-color" content="#0f0e0c" />
+  <title>KafeQR — Yönetim Paneli</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="admin-layout">
+
+    <!-- ═══ Üst Bar ═══ -->
+    <header class="admin-topbar">
+      <div class="admin-brand">
+        <div class="admin-brand-icon">☕</div>
+        <div class="admin-brand-text">
+          <h1>KafeQR</h1>
+          <span>Yönetim Paneli</span>
+        </div>
+      </div>
+      <div class="admin-status">
+        <div class="status-indicator">
+          <span class="live-dot"></span>
+          <span>Canlı Bağlantı</span>
+        </div>
+        <span class="notification-count hidden" id="notification-count">0</span>
+        <button class="sound-toggle" id="sound-toggle" type="button" title="Ses bildirimi aç/kapat">
+          🔔 <span>Ses Açık</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ═══ İstatistik Kartları ═══ -->
+    <section class="admin-stats" id="admin-stats">
+      <div class="stat-card">
+        <div class="stat-icon waiter">🙋</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-waiter">0</div>
+          <div class="stat-label">Garson Bekliyor</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon bill">🧾</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-bill">0</div>
+          <div class="stat-label">Hesap Talebi</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon total">✅</div>
+        <div class="stat-info">
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-label">Bugün Tamamlanan</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Bildirim Alanı ═══ -->
+    <section class="admin-content">
+      <h2 class="section-title">
+        <span>📡</span> Aktif Talepler
+      </h2>
+      <div class="notifications-grid" id="notifications-grid">
+        <!-- Boş durum ve bildirim kartları JavaScript ile yönetilir -->
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">😌</div>
+          <h3>Şu an aktif talep yok</h3>
+          <p>Müşterilerden gelen talepler burada anlık olarak görünecek.</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ═══ Toast Bildirim Konteyneri ═══ -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ═══ Firebase SDK (CDN — v9 Compat) ═══ -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+  <!-- ═══ Yönetim Paneli Mantığı ═══ -->
+  <script src="admin.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="KafeQR NFC işlem sayfası — masanızdan anında garson çağırın veya hesap isteyin." />
+  <meta name="theme-color" content="#0f0e0c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>KafeQR — İşlem</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── İşlem Sayfası Özel Stilleri ── */
+    .islem-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .islem-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--glass-bg-strong);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      padding: 48px 32px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      animation: card-float-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .islem-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--color-primary), var(--color-accent), var(--color-primary));
+      background-size: 200% 100%;
+      animation: gradient-slide 2s linear infinite;
+    }
+
+    @keyframes card-float-in {
+      0% { opacity: 0; transform: translateY(30px) scale(0.92); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes gradient-slide {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    /* ── Yükleniyor Durumu ── */
+    .islem-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .islem-spinner {
+      width: 64px;
+      height: 64px;
+      position: relative;
+    }
+
+    .islem-spinner::before,
+    .islem-spinner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid transparent;
+    }
+
+    .islem-spinner::before {
+      border-top-color: var(--color-primary);
+      border-right-color: var(--color-primary);
+      animation: spin 1s linear infinite;
+    }
+
+    .islem-spinner::after {
+      inset: 6px;
+      border-bottom-color: var(--color-accent);
+      border-left-color: var(--color-accent);
+      animation: spin 0.6s linear infinite reverse;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .islem-loading-text {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+    }
+
+    .islem-loading-text .dot-pulse::after {
+      content: '';
+      animation: dot-pulse-anim 1.5s steps(4, end) infinite;
+    }
+
+    @keyframes dot-pulse-anim {
+      0%   { content: ''; }
+      25%  { content: '.'; }
+      50%  { content: '..'; }
+      75%  { content: '...'; }
+      100% { content: ''; }
+    }
+
+    /* ── Sonuç Durumu ── */
+    .islem-result {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      animation: result-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .islem-result.visible {
+      display: flex;
+    }
+
+    @keyframes result-pop {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .result-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      position: relative;
+    }
+
+    .result-icon.success {
+      background: rgba(74, 222, 128, 0.1);
+      box-shadow: 0 0 40px rgba(74, 222, 128, 0.15);
+    }
+
+    .result-icon.success::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid rgba(74, 222, 128, 0.3);
+      animation: ring-expand 1.5s ease-out infinite;
+    }
+
+    @keyframes ring-expand {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+
+    .result-icon.error {
+      background: rgba(248, 113, 113, 0.1);
+      box-shadow: 0 0 40px rgba(248, 113, 113, 0.15);
+    }
+
+    .result-icon.warning {
+      background: rgba(251, 191, 36, 0.1);
+      box-shadow: 0 0 40px rgba(251, 191, 36, 0.15);
+    }
+
+    .result-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--color-text);
+      line-height: 1.4;
+    }
+
+    .result-desc {
+      font-size: 0.88rem;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+      max-width: 300px;
+    }
+
+    .result-table-info {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      margin-top: 4px;
+    }
+
+    .islem-brand {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.72rem;
+      color: var(--color-text-muted);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      opacity: 0.6;
+    }
+
+    /* ── Menüye Dön Butonu ── */
+    .btn-back-menu {
+      margin-top: 12px;
+      padding: 12px 28px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+      color: #fff;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all var(--transition-base);
+      box-shadow: 0 4px 20px rgba(181, 118, 60, 0.3);
+    }
+
+    .btn-back-menu:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(181, 118, 60, 0.45);
+    }
+
+    .btn-back-menu:active {
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ İşlem Kartı ═══ -->
+  <div class="islem-wrapper">
+    <div class="islem-card">
+
+      <!-- Yükleniyor Durumu -->
+      <div class="islem-loading" id="islem-loading">
+        <div class="islem-spinner"></div>
+        <div class="islem-loading-text">
+          Sinyal Gönderiliyor<span class="dot-pulse"></span>
+        </div>
+      </div>
+
+      <!-- Sonuç Durumu (Dinamik) -->
+      <div class="islem-result" id="islem-result">
+        <div class="result-icon" id="result-icon"></div>
+        <div class="result-title" id="result-title"></div>
+        <div class="result-desc" id="result-desc"></div>
+        <div class="result-table-info" id="result-table-info" style="display:none;"></div>
+        <button class="btn-back-menu" id="btn-back-menu" style="display:none;" type="button">
+          ☕ Menüye Dön
+        </button>
+      </div>
+
+    </div>
+
+    <div class="islem-brand">KafeQR — NFC İşlem Sistemi</div>
+  </div>
+
+  <!-- ═══ Firebase SDK (CDN — v9 Compat) ═══ -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+  <!-- ═══ İşlem Mantığı ═══ -->
+  <script src="islem.js"></script>
+
+</body>
+</html>

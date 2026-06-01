@@ -1,0 +1,1526 @@
+/* ============================================
+   KAFEQR — Ortak Stil Dosyası (style.css)
+   Butik Kafe QR Sipariş & Garson Çağırma Sistemi
+   ============================================ */
+
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap');
+
+/* ── CSS Custom Properties (Tasarım Tokenları) ── */
+:root {
+  /* Ana Renk Paleti — Sıcak Kafe Tonları */
+  --color-primary: #b5763c;
+  --color-primary-light: #d4a06a;
+  --color-primary-dark: #8a5a2b;
+  --color-accent: #e8c47c;
+  --color-accent-glow: rgba(232, 196, 124, 0.35);
+
+  /* Nötr Renkler */
+  --color-bg: #0f0e0c;
+  --color-bg-warm: #1a1714;
+  --color-surface: #221f1a;
+  --color-surface-hover: #2d2924;
+  --color-surface-elevated: #332e28;
+  --color-border: rgba(181, 118, 60, 0.15);
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+
+  /* Metin Renkleri */
+  --color-text: #f5f0e8;
+  --color-text-secondary: #a89e8e;
+  --color-text-muted: #7a7164;
+
+  /* Durum Renkleri */
+  --color-success: #4ade80;
+  --color-danger: #f87171;
+  --color-danger-glow: rgba(248, 113, 113, 0.3);
+  --color-warning: #fbbf24;
+  --color-info: #60a5fa;
+
+  /* Glassmorphism */
+  --glass-bg: rgba(34, 31, 26, 0.72);
+  --glass-bg-strong: rgba(34, 31, 26, 0.88);
+  --glass-border: rgba(181, 118, 60, 0.18);
+  --glass-blur: 20px;
+
+  /* Tipografi */
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+
+  /* Boyutlar */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  /* Gölgeler */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 30px var(--color-accent-glow);
+
+  /* Geçişler */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── Reset & Base ── */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dekoratif arka plan gradyanı — zenginleştirilmiş */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 20% 10%, rgba(181, 118, 60, 0.1) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 500px at 80% 80%, rgba(232, 196, 124, 0.07) 0%, transparent 70%),
+    radial-gradient(circle 300px at 50% 50%, rgba(181, 118, 60, 0.03) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Hareketli arka plan parlama efekti */
+body::after {
+  content: '';
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(181, 118, 60, 0.06) 0%, transparent 70%);
+  top: -100px;
+  right: -150px;
+  pointer-events: none;
+  z-index: 0;
+  animation: float-orb 15s ease-in-out infinite alternate;
+}
+
+@keyframes float-orb {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-80px, 120px) scale(1.2); }
+  100% { transform: translate(40px, 60px) scale(0.9); }
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background: none;
+}
+
+/* ============================================
+   MÜŞTERİ ARAYÜZÜ STİLLERİ
+   ============================================ */
+
+/* ── Üst Başlık (Header) — Premium ── */
+.customer-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 16px 20px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* İnce altın çizgi — header alt kenarı */
+.customer-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-accent-glow), transparent);
+  pointer-events: none;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.brand-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.table-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 12px rgba(181, 118, 60, 0.3);
+}
+
+.table-badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-success);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ── Kategori Navigasyonu — Sliding Indicator ── */
+.category-nav {
+  position: sticky;
+  top: 69px;
+  z-index: 90;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding: 12px 0;
+}
+
+.category-nav-inner {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 20px;
+  max-width: 680px;
+  margin: 0 auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  position: relative;
+}
+
+
+.category-nav-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.category-tab {
+  flex-shrink: 0;
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  transition: all var(--transition-base);
+  white-space: nowrap;
+}
+
+.category-tab:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.category-tab.active {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 2px 12px rgba(181, 118, 60, 0.3);
+}
+
+/* Kayan Alt Gösterge (Sliding Indicator) */
+.tab-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  border-radius: 2px 2px 0 0;
+  z-index: 5;
+  pointer-events: none;
+  box-shadow: 0 0 8px var(--color-accent-glow);
+}
+
+/* ── Ana İçerik Alanı ── */
+.menu-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 20px 16px 140px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Kategori Başlığı ── */
+.category-section {
+  margin-bottom: 32px;
+}
+
+.category-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 16px;
+  padding-left: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.category-title .emoji {
+  font-size: 1.3rem;
+}
+
+/* ── Menü Kartları — Premium Staggered Animasyon ── */
+.menu-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.menu-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+
+  /* Staggered Fade-In Animasyonu */
+  opacity: 0;
+  transform: translateY(20px);
+  animation: card-stagger 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes card-stagger {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.menu-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(181, 118, 60, 0.06), transparent 60%);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.menu-card:hover {
+  border-color: var(--glass-border);
+  transform: translateY(-2px) scale(1.01);
+  box-shadow:
+    var(--shadow-md),
+    0 0 20px rgba(181, 118, 60, 0.06);
+}
+
+.menu-card:hover::before {
+  opacity: 1;
+}
+
+/* ── Menü Kartı Görseli ── */
+.menu-card-icon {
+  flex-shrink: 0;
+  width: 72px; /* Resmi biraz daha büyüttük, daha havalı durur */
+  height: 72px;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-elevated);
+  overflow: hidden; /* Dışa taşan resmi keser */
+  box-shadow: var(--shadow-sm);
+}
+
+.menu-card-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Resmi ezmeden, kareye mükemmel sığdırır (Instagram gibi) */
+  display: block;
+  transition: transform var(--transition-slow);
+}
+
+/* Hover Efekti: Kartın üstüne gelince resim hafifçe yakınlaşsın (Premium Hissi) */
+.menu-card:hover .menu-card-icon img {
+  transform: scale(1.1);
+}
+
+.menu-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.menu-card-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.menu-card-desc {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.menu-card-price {
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-accent);
+  padding-left: 8px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  text-shadow: 0 0 12px rgba(232, 196, 124, 0.15);
+}
+
+/* Fiyat Animasyonları */
+.menu-card-price.price-updating {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.9);
+}
+
+.menu-card-price.price-updated {
+  animation: price-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes price-pop {
+  0% { opacity: 0; transform: translateY(6px) scale(0.9); }
+  60% { opacity: 1; transform: translateY(-2px) scale(1.08); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── S/M/L Boyut Seçici ── */
+.size-selector {
+  display: inline-flex;
+  gap: 0;
+  margin-top: 8px;
+  background: var(--color-bg-warm);
+  border-radius: var(--radius-full);
+  padding: 3px;
+  border: 1px solid var(--color-border-subtle);
+  position: relative;
+  z-index: 2;
+}
+
+.size-pill {
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: transparent;
+  transition: all var(--transition-base);
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+
+.size-pill:hover:not(.active) {
+  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.size-pill.active {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: #fff;
+  box-shadow:
+    0 2px 8px rgba(181, 118, 60, 0.3),
+    0 0 12px rgba(181, 118, 60, 0.1);
+  transform: scale(1.02);
+}
+
+.size-pill:active {
+  transform: scale(0.95);
+}
+
+/* ── Sabit Alt Çubuk (Floating Action Bar) ── */
+.action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid var(--glass-border);
+}
+
+.action-bar-inner {
+  display: flex;
+  gap: 10px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.15), transparent 70%);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.action-btn:active::after {
+  opacity: 1;
+}
+
+.action-btn:active {
+  transform: scale(0.97);
+}
+
+.action-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.action-btn:disabled::after {
+  display: none;
+}
+
+.btn-waiter {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(181, 118, 60, 0.35);
+}
+
+.btn-waiter:hover:not(:disabled) {
+  box-shadow: 0 6px 28px rgba(181, 118, 60, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-bill {
+  background: var(--color-surface-elevated);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.btn-bill:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  border-color: var(--glass-border);
+  transform: translateY(-1px);
+}
+
+.action-btn .icon {
+  font-size: 1.15rem;
+}
+
+/* Cooldown geri sayım */
+.cooldown-timer {
+  font-size: 0.72rem;
+  opacity: 0.7;
+  font-weight: 400;
+  margin-left: 2px;
+}
+
+/* ── Toast Bildirim ── */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  width: 90%;
+  max-width: 400px;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  color: var(--color-text);
+  font-size: 0.88rem;
+  font-weight: 500;
+  pointer-events: auto;
+  animation: toast-in 0.4s var(--transition-spring) forwards;
+}
+
+.toast.toast-out {
+  animation: toast-out 0.3s ease forwards;
+}
+
+.toast.success {
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.toast.error {
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+.toast .toast-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+@keyframes toast-in {
+  0% { opacity: 0; transform: translateY(-20px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes toast-out {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-20px) scale(0.95); }
+}
+
+/* ============================================
+   YÖNETİM PANELİ (ADMİN) STİLLERİ
+   ============================================ */
+
+/* ── Admin Layout ── */
+.admin-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Admin Üst Bar ── */
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.admin-brand-text h1 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.admin-brand-text span {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.admin-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--color-surface);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border-subtle);
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+.status-indicator .live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-success);
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.notification-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-danger);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  box-shadow: 0 2px 10px var(--color-danger-glow);
+}
+
+.notification-count.hidden {
+  display: none;
+}
+
+/* ── Admin İstatistik Kartları ── */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 24px 28px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.stat-card {
+  padding: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all var(--transition-base);
+}
+
+.stat-card:hover {
+  border-color: var(--glass-border);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.stat-icon.waiter { background: rgba(181, 118, 60, 0.15); }
+.stat-icon.bill { background: rgba(96, 165, 250, 0.15); }
+.stat-icon.total { background: rgba(74, 222, 128, 0.15); }
+
+.stat-info .stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.stat-info .stat-label {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Bildirim Alanı ── */
+.admin-content {
+  flex: 1;
+  padding: 0 28px 28px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Bildirim Grid'i ── */
+.notifications-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+/* ── Bildirim Kartı ── */
+.notification-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-base);
+  animation: card-in 0.5s var(--transition-spring) forwards;
+}
+
+.notification-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.notification-card.type-garson::before {
+  background: linear-gradient(90deg, var(--color-danger), var(--color-warning));
+}
+
+.notification-card.type-hesap::before {
+  background: linear-gradient(90deg, var(--color-info), var(--color-primary-light));
+}
+
+/* Yanıp sönen tehlike efekti — garson çağırma */
+.notification-card.type-garson {
+  border-color: rgba(248, 113, 113, 0.25);
+  animation: card-in 0.5s var(--transition-spring) forwards, card-pulse-danger 2s ease-in-out infinite;
+}
+
+/* Hesap kartı hafif mavi parlaması */
+.notification-card.type-hesap {
+  border-color: rgba(96, 165, 250, 0.2);
+}
+
+@keyframes card-in {
+  0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes card-pulse-danger {
+  0%, 100% { box-shadow: 0 0 0 rgba(248, 113, 113, 0); }
+  50% { box-shadow: 0 0 30px rgba(248, 113, 113, 0.15); }
+}
+
+.notification-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.notification-table {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notification-table-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.type-garson .notification-table-icon {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--color-danger);
+}
+
+.type-hesap .notification-table-icon {
+  background: rgba(96, 165, 250, 0.15);
+  color: var(--color-info);
+}
+
+.notification-table-info .table-number {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.notification-table-info .request-type {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.type-garson .request-type { color: var(--color-danger); }
+.type-hesap .request-type { color: var(--color-info); }
+
+.notification-time {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  text-align: right;
+  line-height: 1.5;
+}
+
+.notification-time .elapsed {
+  display: block;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.notification-card-body {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: var(--color-bg-warm);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notification-card-body .pulse-ring {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.type-garson .pulse-ring {
+  background: var(--color-danger);
+  box-shadow: 0 0 10px var(--color-danger-glow);
+  animation: ring-pulse 1.5s ease-in-out infinite;
+}
+
+.type-hesap .pulse-ring {
+  background: var(--color-info);
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+  animation: ring-pulse-blue 1.5s ease-in-out infinite;
+}
+
+@keyframes ring-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(248,113,113,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(248,113,113,0); }
+}
+
+@keyframes ring-pulse-blue {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(96,165,250,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(96,165,250,0); }
+}
+
+.notification-card-body .status-text {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.btn-complete {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.type-garson .btn-complete {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+
+.type-garson .btn-complete:hover {
+  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.35);
+  transform: translateY(-1px);
+}
+
+.type-hesap .btn-complete {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.type-hesap .btn-complete:hover {
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-complete:active {
+  transform: scale(0.97) !important;
+}
+
+/* ── Boş Durum ── */
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--color-text-muted);
+  grid-column: 1 / -1;
+}
+
+.empty-state .empty-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+
+.empty-state h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+}
+
+.empty-state p {
+  font-size: 0.85rem;
+}
+
+/* ── Admin Ses Kontrol ── */
+.sound-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.sound-toggle:hover {
+  border-color: var(--glass-border);
+  color: var(--color-text);
+}
+
+.sound-toggle.muted {
+  opacity: 0.5;
+}
+
+/* ============================================
+   RESPONSIVE DÜZENLEMELER
+   ============================================ */
+
+/* Tablet */
+@media (min-width: 768px) {
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .menu-card {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 18px;
+  }
+
+  .menu-card-icon {
+    width: 100%;
+    height: 80px;
+    border-radius: var(--radius-sm);
+    font-size: 2rem;
+  }
+
+  .menu-card-price {
+    padding-left: 0;
+    margin-top: 4px;
+  }
+
+  .size-selector {
+    margin-top: 10px;
+  }
+
+  .action-bar-inner {
+    max-width: 480px;
+  }
+}
+
+/* Masaüstü */
+@media (min-width: 1024px) {
+  .menu-container {
+    max-width: 900px;
+  }
+
+  .menu-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Admin mobil düzeni */
+@media (max-width: 768px) {
+  .admin-topbar {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .admin-stats {
+    padding: 16px;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-content {
+    padding: 0 16px 16px;
+  }
+
+  .notifications-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+
+  .stat-info .stat-value {
+    font-size: 1.3rem;
+  }
+}
+
+/* ── Scrollbar Özelleştirme ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-hover);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+/* ── Erişilebilirlik: Focus Visible ── */
+*:focus-visible {
+  outline: 2px solid var(--color-primary-light);
+  outline-offset: 2px;
+}
+
+/* ── Yükleniyor animasyonu ── */
+.loading-shimmer {
+  background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-surface-hover) 50%, var(--color-surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ============================================
+   NFC MODAL STİLLERİ
+   ============================================ */
+
+/* ── Overlay (Arka Plan) ── */
+.nfc-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nfc-modal-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.nfc-modal-overlay.closing {
+  animation: modal-fade-out 0.3s ease forwards;
+}
+
+@keyframes modal-fade-out {
+  0% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+/* ── Modal Kartı ── */
+.nfc-modal-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 40px 32px 32px;
+  text-align: center;
+  position: relative;
+  box-shadow:
+    var(--shadow-lg),
+    0 0 60px rgba(181, 118, 60, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transform: translateY(30px) scale(0.92);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nfc-modal-overlay.visible .nfc-modal-card {
+  transform: translateY(0) scale(1);
+}
+
+.nfc-modal-overlay.closing .nfc-modal-card {
+  transform: translateY(20px) scale(0.95);
+}
+
+/* ── Kapatma Butonu ── */
+.nfc-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+  cursor: pointer;
+  z-index: 2;
+}
+
+.nfc-modal-close:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+  border-color: var(--glass-border);
+  transform: rotate(90deg);
+}
+
+/* ── NFC İkon Alanı ── */
+.nfc-icon-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nfc-icon-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  box-shadow:
+    0 4px 24px rgba(181, 118, 60, 0.35),
+    0 0 40px rgba(232, 196, 124, 0.15);
+}
+
+.nfc-svg-icon {
+  width: 40px;
+  height: 40px;
+  color: #fff;
+}
+
+/* ── Dalga (Ripple) Efektleri ── */
+.nfc-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: nfc-wave 2.5s cubic-bezier(0, 0.2, 0.4, 1) infinite;
+}
+
+.nfc-ripple-2 {
+  animation-delay: 0.8s;
+}
+
+.nfc-ripple-3 {
+  animation-delay: 1.6s;
+}
+
+@keyframes nfc-wave {
+  0% {
+    width: 72px;
+    height: 72px;
+    opacity: 0.6;
+    border-color: var(--color-primary);
+  }
+  100% {
+    width: 140px;
+    height: 140px;
+    opacity: 0;
+    border-color: var(--color-accent);
+  }
+}
+
+/* ── Modal Başlık ── */
+.nfc-modal-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+/* ── Modal Açıklama ── */
+.nfc-modal-desc {
+  font-size: 0.88rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.nfc-modal-desc strong {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* ── Adım Adım Yönlendirme ── */
+.nfc-modal-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding: 16px;
+  background: var(--color-bg-warm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.nfc-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.nfc-step-num {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Tamam Butonu ── */
+.nfc-modal-btn {
+  width: 100%;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: all var(--transition-base);
+  box-shadow: 0 4px 20px rgba(181, 118, 60, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.nfc-modal-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.15), transparent 70%);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.nfc-modal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(181, 118, 60, 0.45);
+}
+
+.nfc-modal-btn:active {
+  transform: scale(0.97);
+}
+
+.nfc-modal-btn:active::after {
+  opacity: 1;
+}
+
+/* ── NFC Modal Responsive ── */
+@media (max-width: 480px) {
+  .nfc-modal-card {
+    padding: 32px 20px 24px;
+    border-radius: var(--radius-lg);
+  }
+
+  .nfc-icon-wrapper {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+  }
+
+  .nfc-icon-circle {
+    width: 60px;
+    height: 60px;
+  }
+
+  .nfc-svg-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .nfc-ripple {
+    width: 60px;
+    height: 60px;
+  }
+
+  @keyframes nfc-wave {
+    0% {
+      width: 60px;
+      height: 60px;
+      opacity: 0.6;
+    }
+    100% {
+      width: 120px;
+      height: 120px;
+      opacity: 0;
+    }
+  }
+
+  .nfc-modal-title {
+    font-size: 1.2rem;
+  }
+}
+

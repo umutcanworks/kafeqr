@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="QR menü ile hızlıca sipariş verin, garson çağırın veya hesap isteyin. Butik kafe deneyimi." />
+  <meta name="theme-color" content="#0f0e0c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>KafeQR — Dijital Menü</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══ Üst Başlık ═══ -->
+  <header class="customer-header" id="customer-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon">☕</div>
+        <span class="brand-name">KafeQR</span>
+      </div>
+      <div class="table-badge" id="table-badge">
+        <span class="dot"></span>
+        <span id="table-label">Masa —</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ Kategori Navigasyonu ═══ -->
+  <nav class="category-nav" id="category-nav">
+    <div class="category-nav-inner" id="category-tabs">
+      <!-- Dinamik olarak JavaScript ile doldurulacak -->
+    </div>
+  </nav>
+
+  <!-- ═══ Menü İçeriği ═══ -->
+  <main class="menu-container" id="menu-container">
+    <!-- Dinamik olarak JavaScript ile doldurulacak -->
+  </main>
+
+  <!-- ═══ Sabit Alt İşlem Çubuğu ═══ -->
+  <div class="action-bar">
+    <div class="action-bar-inner">
+      <button class="action-btn btn-waiter" id="btn-waiter" type="button">
+        <span class="icon">🙋</span>
+        <span>Garson Çağır</span>
+      </button>
+      <button class="action-btn btn-bill" id="btn-bill" type="button">
+        <span class="icon">🧾</span>
+        <span>Hesap İste</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ Toast Bildirim Konteyneri ═══ -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ═══ Firebase SDK (CDN — v9 Compat) ═══ -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+  <!-- ═══ Uygulama Mantığı ═══ -->
+  <script src="app.js"></script>
+
+</body>
+</html>
