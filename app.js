@@ -17,7 +17,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// ── Menü Verisi (Görselli JSON) ──
+// ── Menü Verisi (Görselli ve S/M/L Seçenekli JSON) ──
 const menuData = [
   {
     id: "sicak-kahveler",
@@ -27,8 +27,8 @@ const menuData = [
       { name: "Türk Kahvesi", desc: "Geleneksel ince çekilmiş, köpüklü Türk kahvesi", price: 65, image: "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=200&h=200&fit=crop" },
       { name: "Espresso", desc: "Yoğun ve aromatik İtalyan espresso", price: 70, image: "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=200&h=200&fit=crop" },
       { name: "Cappuccino", desc: "Kadifemsi süt köpüğü ile espresso", price: 90, image: "https://images.unsplash.com/photo-1534778101976-62847782c213?w=200&h=200&fit=crop" },
-      { name: "Latte", desc: "Bol sütlü, yumuşak espresso", price: 95, image: "https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?w=200&h=200&fit=crop" },
-      { name: "Filtre Kahve", desc: "Özenle demlenen, hafif gövdeli filtre kahve", price: 75, image: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=200&h=200&fit=crop" },
+      { name: "Latte", desc: "Bol sütlü, yumuşak espresso", sizes: { S: 85, M: 95, L: 105 }, price: 95, image: "https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?w=200&h=200&fit=crop" },
+      { name: "Filtre Kahve", desc: "Özenle demlenen, hafif gövdeli filtre kahve", sizes: { S: 65, M: 75, L: 85 }, price: 75, image: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=200&h=200&fit=crop" },
       { name: "Mocha", desc: "Çikolata ve espressonun muhteşem buluşması", price: 100, image: "https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?w=200&h=200&fit=crop" }
     ]
   },
@@ -37,7 +37,7 @@ const menuData = [
     name: "Soğuk İçecekler",
     emoji: "🧊",
     items: [
-      { name: "Ice Latte", desc: "Buzlu süt ve espresso karışımı", price: 100, image: "https://images.unsplash.com/photo-1461023058943-0708e5215cbd?w=200&h=200&fit=crop" },
+      { name: "Ice Latte", desc: "Buzlu süt ve espresso karışımı", sizes: { S: 90, M: 100, L: 110 }, price: 100, image: "https://images.unsplash.com/photo-1461023058943-0708e5215cbd?w=200&h=200&fit=crop" },
       { name: "Ice Americano", desc: "Buz gibi serinleten Americano", price: 90, image: "https://images.unsplash.com/photo-1517701550927-30cfcb64db88?w=200&h=200&fit=crop" },
       { name: "Limonata", desc: "Taze sıkılmış, nane yapraklı limonata", price: 70, image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=200&h=200&fit=crop" },
       { name: "Smoothie Bowl", desc: "Mevsim meyveleriyle hazırlanan smoothie", price: 110, image: "https://images.unsplash.com/photo-1626082895617-2c6328af3307?w=200&h=200&fit=crop" },
@@ -73,11 +73,12 @@ function getTableNumber() {
 }
 
 const tableNumber = getTableNumber();
-tableLabel.textContent = `Masa ${tableNumber}`;
+if(tableLabel) {
+   tableLabel.textContent = `Masa ${tableNumber}`;
+}
 
 // ── Kategori Navigasyonunu Oluştur (Sliding Indicator) ──
 function renderCategoryTabs() {
-  // Kayan gösterge (indicator) elemanını oluştur
   const indicator = document.createElement("div");
   indicator.classList.add("tab-indicator");
   categoryTabs.appendChild(indicator);
@@ -94,6 +95,7 @@ function renderCategoryTabs() {
       document.querySelectorAll(".category-tab").forEach(t => t.classList.remove("active"));
       tab.classList.add("active");
       moveIndicator(tab);
+      
       const section = document.getElementById(`section-${category.id}`);
       if (section) {
         const headerHeight = document.getElementById("customer-header").offsetHeight;
@@ -103,10 +105,10 @@ function renderCategoryTabs() {
         window.scrollTo({ top, behavior: "smooth" });
       }
     });
+    
     categoryTabs.appendChild(tab);
   });
 
-  // İlk sekmeye göstergeyi konumla
   requestAnimationFrame(() => {
     const firstTab = categoryTabs.querySelector(".category-tab.active");
     if (firstTab) moveIndicator(firstTab, true);
@@ -117,47 +119,45 @@ function renderCategoryTabs() {
 function moveIndicator(tab, instant = false) {
   const indicator = categoryTabs.querySelector(".tab-indicator");
   if (!indicator || !tab) return;
+  
   const navRect = categoryTabs.getBoundingClientRect();
   const tabRect = tab.getBoundingClientRect();
   const scrollLeft = categoryTabs.scrollLeft;
+  
   indicator.style.transition = instant ? "none" : "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)";
   indicator.style.width = `${tabRect.width}px`;
   indicator.style.left = `${tabRect.left - navRect.left + scrollLeft}px`;
 }
 
 // ── Menü Kartlarını Oluştur (S/M/L + Staggered Animasyon) ──
-let cardIndex = 0; // Staggered animasyon sayacı
-
+let cardIndex = 0;
 function renderMenu() {
   menuContainer.innerHTML = "";
   cardIndex = 0;
-
+  
   menuData.forEach(category => {
     const section = document.createElement("section");
     section.classList.add("category-section");
     section.id = `section-${category.id}`;
-
+    
     const title = document.createElement("h2");
     title.classList.add("category-title");
     title.innerHTML = `<span class="emoji">${category.emoji}</span> ${category.name}`;
     section.appendChild(title);
-
+    
     const grid = document.createElement("div");
     grid.classList.add("menu-grid");
-
+    
     category.items.forEach(item => {
       const card = document.createElement("div");
       card.classList.add("menu-card");
-
-      // Staggered animasyon gecikmesi
       card.style.animationDelay = `${cardIndex * 60}ms`;
       cardIndex++;
-
+      
       const hasSizes = item.sizes && typeof item.sizes === "object";
       const defaultSize = "M";
       const displayPrice = hasSizes ? item.sizes[defaultSize] : item.price;
-
-      // Kart içeriği
+      
       let sizesHTML = "";
       if (hasSizes) {
         sizesHTML = `
@@ -173,7 +173,7 @@ function renderMenu() {
           </div>
         `;
       }
-
+      
       card.innerHTML = `
         <div class="menu-card-icon">
           <img src="${item.image}" alt="${item.name}" loading="lazy">
@@ -185,21 +185,18 @@ function renderMenu() {
         </div>
         <div class="menu-card-price" data-price-display>₺${displayPrice}</div>
       `;
-
-      // S/M/L buton olay dinleyicileri
+      
       if (hasSizes) {
         const pills = card.querySelectorAll(".size-pill");
         const priceEl = card.querySelector("[data-price-display]");
-
         pills.forEach(pill => {
           pill.addEventListener("click", () => {
-            // Aktif sınıfı güncelle
             pills.forEach(p => p.classList.remove("active"));
             pill.classList.add("active");
-
-            // Fiyatı animasyonlu güncelle
+            
             const newPrice = pill.getAttribute("data-price");
             priceEl.classList.add("price-updating");
+            
             setTimeout(() => {
               priceEl.textContent = `₺${newPrice}`;
               priceEl.classList.remove("price-updating");
@@ -209,10 +206,9 @@ function renderMenu() {
           });
         });
       }
-
       grid.appendChild(card);
     });
-
+    
     section.appendChild(grid);
     menuContainer.appendChild(section);
   });
@@ -228,13 +224,14 @@ function showToast(message, type = "success") {
     <span>${message}</span>
   `;
   toastContainer.appendChild(toast);
+  
   setTimeout(() => {
     toast.classList.add("toast-out");
     toast.addEventListener("animationend", () => toast.remove());
   }, 3000);
 }
 
-// ── Kaydırma ile Aktif Kategori Takibi (Sliding Indicator güncellemesi) ──
+// ── Kaydırma ile Aktif Kategori Takibi ──
 function setupScrollSpy() {
   const observer = new IntersectionObserver(
     (entries) => {
@@ -251,25 +248,23 @@ function setupScrollSpy() {
     },
     { rootMargin: "-120px 0px -60% 0px", threshold: 0 }
   );
-
+  
   menuData.forEach(cat => {
     const el = document.getElementById(`section-${cat.id}`);
     if (el) observer.observe(el);
   });
 }
 
-// ── NFC Yönlendirme Modalı (Glassmorphism Tasarım) ──
+// ── NFC Yönlendirme Modalı ──
 function createNfcModal() {
   if (document.getElementById("nfc-modal")) return;
-
   const overlay = document.createElement("div");
   overlay.classList.add("nfc-modal-overlay");
   overlay.id = "nfc-modal";
-
+  
   overlay.innerHTML = `
     <div class="nfc-modal-card">
       <button class="nfc-modal-close" id="nfc-modal-close" type="button" aria-label="Kapat">✕</button>
-
       <div class="nfc-icon-wrapper">
         <div class="nfc-ripple"></div>
         <div class="nfc-ripple nfc-ripple-2"></div>
@@ -291,12 +286,10 @@ function createNfcModal() {
           </svg>
         </div>
       </div>
-
       <h3 class="nfc-modal-title" id="nfc-modal-title">NFC ile Anında İletişim</h3>
       <p class="nfc-modal-desc" id="nfc-modal-desc">
         Masanızdaki <strong>NFC noktasına</strong> telefonunuzu dokundurarak anında işlem yapabilirsiniz.
       </p>
-
       <div class="nfc-modal-steps">
         <div class="nfc-step">
           <span class="nfc-step-num">1</span>
@@ -311,13 +304,12 @@ function createNfcModal() {
           <span>İşlem otomatik olarak başlar</span>
         </div>
       </div>
-
       <button class="nfc-modal-btn" id="nfc-modal-ok" type="button">Tamam, Anladım</button>
     </div>
   `;
-
+  
   document.body.appendChild(overlay);
-
+  
   document.getElementById("nfc-modal-close").addEventListener("click", closeNfcModal);
   document.getElementById("nfc-modal-ok").addEventListener("click", closeNfcModal);
   overlay.addEventListener("click", (e) => {
@@ -330,7 +322,7 @@ function showNfcModal(aksiyonTipi) {
   const modal = document.getElementById("nfc-modal");
   const title = document.getElementById("nfc-modal-title");
   const desc = document.getElementById("nfc-modal-desc");
-
+  
   if (aksiyonTipi === "garson") {
     title.textContent = "Garson Çağır — NFC";
     desc.innerHTML = 'Masanızdaki <strong>NFC noktasına</strong> telefonunuzu dokundurarak anında garson çağırabilirsiniz.';
@@ -338,7 +330,7 @@ function showNfcModal(aksiyonTipi) {
     title.textContent = "Hesap İste — NFC";
     desc.innerHTML = 'Masanızdaki <strong>NFC noktasına</strong> telefonunuzu dokundurarak hesap talebinizi iletebilirsiniz.';
   }
-
+  
   requestAnimationFrame(() => {
     modal.classList.add("visible");
   });
@@ -347,22 +339,22 @@ function showNfcModal(aksiyonTipi) {
 function closeNfcModal() {
   const modal = document.getElementById("nfc-modal");
   if (!modal) return;
-
+  
   modal.classList.remove("visible");
   modal.classList.add("closing");
-
+  
   modal.addEventListener("animationend", () => {
     modal.remove();
   }, { once: true });
-
+  
   setTimeout(() => {
     if (document.getElementById("nfc-modal")) modal.remove();
   }, 400);
 }
 
-// ── Buton Olay Dinleyicileri (Artık Firebase'e değil Modal'a gidiyor) ──
-btnWaiter.addEventListener("click", () => showNfcModal("garson"));
-btnBill.addEventListener("click", () => showNfcModal("hesap"));
+// ── Buton Olay Dinleyicileri ──
+if(btnWaiter) btnWaiter.addEventListener("click", () => showNfcModal("garson"));
+if(btnBill) btnBill.addEventListener("click", () => showNfcModal("hesap"));
 
 // ── Sayfa Yüklendiğinde Çalıştır ──
 document.addEventListener("DOMContentLoaded", () => {
